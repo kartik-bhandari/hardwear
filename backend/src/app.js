@@ -33,6 +33,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
+app.get('/', (_req, res) => {
+  res.json({ ok: true, message: 'HARD-WEAR API is running' });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, name: 'hardwear-api' });
 });
