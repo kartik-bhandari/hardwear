@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @media (min-width: 640px) {
+    html {
+      font-size: 115% !important;
+    }
+  }
+
+  body {
+    background-color: #0c0c0c !important;
+    color: #f0ede6 !important;
+    font-family: 'Barlow', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Enabled standard border-radius classes */
+
+  /* Input overrides */
+  input[type="text"], 
+  input[type="email"], 
+  input[type="password"], 
+  input[type="number"], 
+  select, 
+  textarea {
+    background-color: #0c0c0c !important;
+    color: #f0ede6 !important;
+    border: 1px solid #1e1e1e !important;
+    outline: none !important;
+    transition: border-color 0.15s ease-in-out;
+  }
+
+  input[type="text"]:focus, 
+  input[type="email"]:focus, 
+  input[type="password"]:focus, 
+  input[type="number"]:focus, 
+  select:focus, 
+  textarea:focus {
+    border-color: #ff3c00 !important;
+    box-shadow: none !important;
+    --tw-ring-color: #ff3c00 !important;
+  }
+
+  /* Scrollbar override */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0c0c0c;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e1e1e;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3b1676;
+  }
+}
+
+/* Force dark brutalist styling onto tailwind component colors */
+.bg-white, .bg-slate-50, .bg-slate-100, .bg-gray-50, .bg-gray-100 {
+  background-color: #0c0c0c !important;
+}
+
+.border-slate-200, .border-slate-100, .border-slate-300, .border-gray-200 {
+  border-color: #1e1e1e !important;
+}
+
+.text-slate-900, .text-slate-800, .text-slate-950, .text-gray-900 {
+  color: #f0ede6 !important;
+}
+
+.text-slate-600, .text-slate-500, .text-gray-600, .text-gray-500 {
+  color: #666666 !important;
+}
+
+.text-slate-400, .text-gray-400 {
+  color: #333333 !important;
+}
+
+/* Custom background patterns */
+.hw-lines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 29px,
+    #1a1a1a 29px,
+    #1a1a1a 30px
+  );
+}
+
+.hw-diagonal-lines {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    #161616 8px,
+    #161616 9px
+  );
+}
+
+/* Ticker text scrolling animation */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.hw-ticker-inner {
+  display: inline-block;
+  animation: ticker 18s linear infinite;
+}
+
+.hw-cart-btn-rounded {
+  border-radius: 9999px !important;
+}

@@ -1,0 +1,7 @@
+# Handle text files automatically and normalize to LF
+* text=auto eol=lf
+
+# Explicitly declare files that must always use LF
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
