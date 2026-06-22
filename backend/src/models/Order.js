@@ -39,6 +39,9 @@ const orderSchema = new mongoose.Schema(
     payment: {
       method: { type: String, default: 'mock' },
       isPaid: { type: Boolean, default: false },
+      razorpayOrderId: { type: String },
+      razorpayPaymentId: { type: String },
+      razorpaySignature: { type: String },
     },
   },
   { timestamps: true },
