@@ -31,18 +31,18 @@ export const sendOTPEmail = async (email, otp) => {
   const mailOptions = {
     from,
     to: email,
-    subject: `${otp} is your Hard-Wear Verification Code`,
-    text: `Your Hard-Wear registration verification code is ${otp}. This code is valid for 5 minutes. If you did not request this code, please ignore this email.`,
+    subject: `${otp} is your HardWear Verification Code`,
+    text: `Your HardWear registration verification code is ${otp}. This code is valid for 5 minutes. If you did not request this code, please ignore this email.`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #1e1e1e; background-color: #0c0c0c; color: #f0ede6;">
-        <h2 style="color: #3f1f72; font-family: 'Arial Black', Gadget, sans-serif; text-transform: uppercase; letter-spacing: 2px;">HARD-WEAR</h2>
+        <h2 style="color: #3f1f72; font-family: 'Arial Black', Gadget, sans-serif; text-transform: uppercase; letter-spacing: 2px;">HARDWEAR</h2>
         <p style="font-size: 16px; line-height: 1.5; color: #f0ede6;">Verify your email address to complete registration.</p>
         <div style="background-color: #161616; border: 1px solid #1e1e1e; padding: 15px; text-align: center; margin: 20px 0;">
           <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #3f1f72;">${otp}</span>
         </div>
         <p style="font-size: 14px; color: #666666; line-height: 1.5;">This verification code is valid for 5 minutes. If you did not request this verification code, please ignore this email.</p>
         <hr style="border: 0; border-top: 1px solid #1e1e1e; margin: 20px 0;" />
-        <p style="font-size: 12px; color: #333333; text-align: center; letter-spacing: 1px;">www.hard-wear.in</p>
+        <p style="font-size: 12px; color: #333333; text-align: center; letter-spacing: 1px;">www.hardwear.live</p>
       </div>
     `,
   };

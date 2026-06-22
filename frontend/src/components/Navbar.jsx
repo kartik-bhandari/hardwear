@@ -95,8 +95,8 @@ export default function Navbar() {
           </form>
         )}
 
-        <Link to="/" className="font-bebas text-2xl tracking-[4px] text-brutalist-text transition hover:opacity-85" onClick={() => setMobileMenuOpen(false)}>
-          HARD-WEAR
+        <Link to="/" className="transition hover:opacity-85" onClick={() => setMobileMenuOpen(false)}>
+          <img src="/logo.svg" alt="HARD-WEAR Logo" className="h-10 w-auto sm:h-14 sm:w-auto" />
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-6">

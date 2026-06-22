@@ -1,0 +1,22 @@
+<svg viewBox="60 65 1150 350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .outer { font-family: 'Arial Black', Arial, sans-serif; font-weight: 900; fill: #FFFFFF; stroke: #1A1A1A; stroke-width: 3; paint-order: stroke fill; }
+      .inner { font-family: 'Arial Black', Arial, sans-serif; font-weight: 900; fill: #FFFFFF; stroke: #1A1A1A; stroke-width: 3; paint-order: stroke fill; }
+      .tag { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 3px; fill: #3B1676; }
+    </style>
+  </defs>
+
+
+  <ellipse cx="615" cy="240" rx="300" ry="160" fill="#3B1676"/>
+
+  <text x="100"  y="335" font-size="220" class="outer">H</text>
+  <text x="245"  y="335" font-size="220" class="outer">A</text>
+  <text x="880"  y="335" font-size="220" class="outer">A</text>
+  <text x="1015" y="335" font-size="220" class="outer">R</text>
+
+  <text x="355" y="335" font-size="220" class="inner">R</text>
+  <text x="470" y="335" font-size="220" class="inner">D</text>
+  <text x="600" y="335" font-size="220" class="inner">W</text>
+  <text x="775" y="335" font-size="220" class="inner">E</text>
+</svg>
