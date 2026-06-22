@@ -32,8 +32,10 @@ export const register = asyncHandler(async (req, res) => {
     expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes TTL
   });
 
-  // Send verification code email
-  await sendOTPEmail(email.toLowerCase(), otp);
+  // Send verification code email in the background (non-blocking)
+  sendOTPEmail(email.toLowerCase(), otp).catch((err) => {
+    console.error('Background sendOTPEmail error:', err);
+  });
 
   res.status(201).json({
     message: 'OTP sent successfully',
