@@ -29,7 +29,7 @@ app.use(async (req, res, next) => {
 
 const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
   .split(',')
-  .map((v) => v.trim())
+  .map((v) => v.trim().replace(/\/$/, ''))
   .filter(Boolean);
 
 app.use(
@@ -44,7 +44,11 @@ app.use(
       // Allow server-to-server calls and local tools without origin header.
       if (!origin) return callback(null, true);
       if (!allowedOrigins.length) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/$/, '');
+      if (allowedOrigins.includes(cleanOrigin)) return callback(null, true);
+
+      console.warn(`[CORS Blocked] Origin "${origin}" is not in the allowed list:`, allowedOrigins);
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
