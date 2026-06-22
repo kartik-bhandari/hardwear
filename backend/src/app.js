@@ -34,6 +34,12 @@ const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL ||
 app.use(
   cors({
     origin(origin, callback) {
+      // Allow localhost in development
+      if (process.env.NODE_ENV === 'development') {
+        if (origin && (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:'))) {
+          return callback(null, true);
+        }
+      }
       // Allow server-to-server calls and local tools without origin header.
       if (!origin) return callback(null, true);
       if (!allowedOrigins.length) return callback(null, true);
@@ -41,7 +47,7 @@ app.use(
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
-  }),
+  })
 );
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
