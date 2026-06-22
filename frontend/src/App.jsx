@@ -15,6 +15,7 @@ import AdminProductsPage from './pages/admin/AdminProductsPage';
 import AdminEditProductPage from './pages/admin/AdminEditProductPage';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage';
 import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 import RequireAuth from './routes/RequireAuth';
 import RequireAdmin from './routes/RequireAdmin';
 
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         <Route element={<RequireAuth />}>
           <Route path="/checkout" element={<CheckoutPage />} />

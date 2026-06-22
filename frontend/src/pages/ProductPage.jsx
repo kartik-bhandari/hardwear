@@ -18,10 +18,17 @@ export default function ProductPage() {
   const [size, setSize] = useState('M');
   const [color, setColor] = useState('');
   const [qty, setQty] = useState(1);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProduct(slug));
   }, [dispatch, slug]);
+
+  useEffect(() => {
+    if (!showToast) return;
+    const timer = setTimeout(() => setShowToast(false), 3000);
+    return () => clearTimeout(timer);
+  }, [showToast]);
 
   useEffect(() => {
     if (!product) return;
@@ -49,7 +56,29 @@ export default function ProductPage() {
   const mainImg = product.images?.[imgIdx] || product.images?.[0];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10 relative">
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-6 right-6 z-[100] border border-brutalist-border bg-brutalist-bg p-4 flex items-center gap-4 shadow-[4px_4px_0px_#000] text-brutalist-text font-barlow rounded-xl">
+          <div className="h-12 w-12 bg-brutalist-bg border border-brutalist-border rounded-lg overflow-hidden shrink-0">
+            <img src={mainImg} alt="" className="h-full w-full object-cover" />
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-brutalist-orange">Added to Cart!</p>
+            <p className="text-[11px] text-brutalist-muted uppercase tracking-wider mt-0.5">
+              {product.name} — {size} · {color}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowToast(false)}
+            className="text-brutalist-muted hover:text-brutalist-text text-sm font-bold pl-2 cursor-pointer focus:outline-none"
+            type="button"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className="text-sm text-slate-600">
         <Link to="/products" className="hover:underline">
           Products
@@ -68,16 +97,16 @@ export default function ProductPage() {
           </div>
           {product.images?.length > 1 ? (
             <div className="mt-4 flex gap-3 overflow-auto pb-2">
-              {product.images.map((src, i) => (
+              {product.images.map((img, idx) => (
                 <button
-                  key={src}
+                  key={img}
                   type="button"
-                  onClick={() => setImgIdx(i)}
-                  className={`h-20 w-20 overflow-hidden border ${
-                    i === imgIdx ? 'border-slate-900' : 'border-slate-200'
+                  onClick={() => setImgIdx(idx)}
+                  className={`h-20 w-20 shrink-0 border bg-slate-100 overflow-hidden ${
+                    idx === imgIdx ? 'border-slate-900 ring-1 ring-slate-900' : 'border-slate-200'
                   }`}
                 >
-                  <img src={src} alt="" className="h-full w-full object-cover" />
+                  <img src={img} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>
@@ -85,74 +114,77 @@ export default function ProductPage() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-black tracking-tight">{product.name}</h1>
-          <p className="mt-2 text-slate-600">{product.category || 'T-Shirts'}</p>
-          <p className="mt-2 text-xl text-gray-300 font-black">₹{product.price}</p>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase font-barlow-cond">
+            {product.name}
+          </h1>
+          <p className="mt-2 text-xl font-bold text-slate-900">₹{product.price}</p>
 
-          <div className="mt-8 grid gap-5">
+          <div className="mt-8 space-y-6">
+            {product.sizes?.length ? (
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Size</span>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {product.sizes.map((sz) => (
+                    <button
+                      key={sz}
+                      type="button"
+                      onClick={() => setSize(sz)}
+                      className={`h-10 min-w-10 px-3 text-xs font-semibold border rounded-lg hover:border-slate-900 ${
+                        sz === size
+                          ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-900'
+                      }`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {product.colors?.length ? (
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Color</span>
+                <div className="mt-2 flex flex-wrap gap-3">
+                  {product.colors.map((col) => (
+                    <button
+                      key={col}
+                      type="button"
+                      onClick={() => setColor(col)}
+                      className={`h-7 px-3 text-[11px] font-bold tracking-wider uppercase border rounded-full hover:border-slate-900 ${
+                        col === color
+                          ? 'border-slate-900 bg-slate-900 text-white shadow-xs'
+                          : 'border-slate-200 bg-white text-slate-600'
+                      }`}
+                    >
+                      {col}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
             <div>
-              <p className="text-xs font-semibold text-slate-600">Size</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {(product.sizes || []).map((s) => (
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Quantity</span>
+              <div className="mt-2 flex items-center gap-1">
+                <div className="flex items-center border border-slate-200 bg-white rounded-lg overflow-hidden">
                   <button
-                    key={s}
                     type="button"
-                    onClick={() => setSize(s)}
-                    className={`h-10 px-4 border text-sm font-semibold ${
-                      size === s
-                        ? 'border-slate-900 bg-brutalist-orange text-white'
-                        : 'border-slate-200 bg-white text-slate-800 hover:bg-slate-50'
-                    }`}
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="h-10 w-10 grid place-items-center text-slate-700 hover:bg-slate-50 "
                   >
-                    {s}
+                    −
                   </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs font-semibold text-slate-600">Color</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {(product.colors || []).map((c) => (
+                  <div className="w-12 text-center text-sm font-semibold">{qty}</div>
                   <button
-                    key={c}
                     type="button"
-                    onClick={() => setColor(c)}
-                    className={`h-10 px-4  border text-sm font-semibold ${
-                      color === c
-                        ? 'border-slate-900 bg-brutalist-orange text-white'
-                        : 'border-slate-200 bg-white text-slate-800 hover:bg-slate-50'
-                    }`}
+                    onClick={() => setQty((q) => q + 1)}
+                    className="h-10 w-10 grid place-items-center text-slate-700 hover:bg-slate-50"
                   >
-                    {c}
+                    +
                   </button>
-                ))}
+                </div>
               </div>
-            </div>
-
-            <div>
-            <p className="text-xs font-semibold text-slate-600">Qty</p>
-            <div className="flex mt-2
-          
-            items-center gap-3">
-              <div className="inline-flex items-center border border-slate-200 bg-white">
-                <button
-                  type="button"
-                  onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  className="h-10 w-10 grid place-items-center text-slate-700 hover:bg-slate-50 "
-                >
-                  −
-                </button>
-                <div className="w-12 text-center text-sm font-semibold">{qty}</div>
-                <button
-                  type="button"
-                  onClick={() => setQty((q) => q + 1)}
-                  className="h-10 w-10 grid place-items-center text-slate-700 hover:bg-slate-50"
-                >
-                  +
-                </button>
-              </div>
-            </div>
             </div>
           </div>
 
@@ -172,7 +204,11 @@ export default function ProductPage() {
                     color,
                     productSnapshot: { name: product.name, price: product.price, image: product.images?.[0] || '' },
                   }),
-                );
+                ).then((action) => {
+                  if (action.meta.requestStatus === 'fulfilled') {
+                    setShowToast(true);
+                  }
+                });
               }}
               className="h-12 bg-brutalist-orange text-white px-6 text-sm font-semibold hover:bg-brutalist-orange"
             >
@@ -212,4 +248,3 @@ export default function ProductPage() {
     </div>
   );
 }
-

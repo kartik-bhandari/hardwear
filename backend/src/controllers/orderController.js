@@ -13,6 +13,12 @@ export const createOrderFromCart = asyncHandler(async (req, res) => {
     throw new Error('shippingAddress is required');
   }
 
+  const cleanedPhone = shippingAddress.phone ? shippingAddress.phone.replace(/\D/g, '') : '';
+  if (cleanedPhone.length !== 10) {
+    res.status(400);
+    throw new Error('Phone number must be exactly 10 digits');
+  }
+
   const cart = await Cart.findOne({ user: req.user._id });
   if (!cart || cart.items.length === 0) {
     res.status(400);

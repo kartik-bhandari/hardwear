@@ -13,6 +13,7 @@ export default function CheckoutPage() {
 
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [form, setForm] = useState({
     fullName: '',
     phone: '',
@@ -37,8 +38,22 @@ export default function CheckoutPage() {
     }
   }, [dispatch]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    setError(null);
+
+    // Validate phone number to contain exactly 10 digits
+    const cleanedPhone = form.phone.replace(/\D/g, '');
+    if (cleanedPhone.length !== 10) {
+      setError('Phone number must be exactly 10 digits.');
+      return;
+    }
+
+    // Open confirmation modal
+    setShowConfirmModal(true);
+  };
+
+  const processPayment = async () => {
     if (!window.Razorpay) {
       setError('Payment gateway is loading, please try again in a few seconds.');
       return;
@@ -124,7 +139,48 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10 text-brutalist-text font-barlow">
+    <div className="mx-auto max-w-6xl px-6 py-10 text-brutalist-text font-barlow relative">
+      {/* Phone Number Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-xs p-4">
+          <div className="w-full max-w-md border border-brutalist-border bg-[#111] p-6 space-y-6 shadow-[8px_8px_0px_#000] rounded-2xl">
+            <h2 className="font-bebas text-2xl tracking-wider text-brutalist-text uppercase border-b border-brutalist-border pb-3">
+              Confirm Phone Number
+            </h2>
+            <p className="text-sm text-brutalist-muted leading-relaxed">
+              Please confirm your mobile number before proceeding to the payment gateway:
+            </p>
+            <div className="bg-brutalist-bg border border-brutalist-border p-4 text-center rounded-xl">
+              <span className="font-bebas text-2xl tracking-widest text-brutalist-orange">
+                +91 {form.phone}
+              </span>
+            </div>
+            <p className="text-[11px] text-brutalist-muted uppercase tracking-wider">
+              Razorpay will send transaction alerts and updates to this contact number.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowConfirmModal(false);
+                  processPayment();
+                }}
+                className="flex-1 bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] py-3 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer rounded-lg"
+              >
+                Confirm & Pay
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowConfirmModal(false)}
+                className="flex-1 bg-[#222] border border-brutalist-border text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] py-3 hover:bg-[#333] active:scale-[0.98] transition cursor-pointer rounded-lg"
+              >
+                Edit Number
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-[1fr_360px] gap-8">
         <section className="border border-brutalist-border bg-[#111] p-6 space-y-6 order-2 lg:order-1">
           <div>
@@ -140,7 +196,7 @@ export default function CheckoutPage() {
           <form className="grid sm:grid-cols-2 gap-4" onSubmit={handleSubmit}>
             {[
               ['fullName', 'Full name'],
-              ['phone', 'Phone'],
+              ['phone', 'Phone (10 digits)'],
               ['line1', 'Address line 1'],
               ['line2', 'Address line 2 (optional)'],
               ['city', 'City'],
@@ -163,7 +219,7 @@ export default function CheckoutPage() {
             <div className="sm:col-span-2 pt-4">
               <button
                 disabled={placing === 'loading' || isProcessing || !items.length}
-                className="w-full bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
+                className="w-full bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:opacity-80 active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
                 type="submit"
               >
                 {placing === 'loading' || isProcessing ? 'Processing…' : 'Place order'}
@@ -199,4 +255,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-

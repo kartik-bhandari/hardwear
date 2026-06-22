@@ -6,9 +6,10 @@ import { sendOTPEmail } from '../utils/email.js';
 
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+  if (password.length < 6 || !passwordRegex.test(password)) {
     res.status(400);
-    throw new Error('name, email, password are required');
+    throw new Error('Password must be at least 6 characters long and contain both alphabets and numbers');
   }
 
   const exists = await User.findOne({ email: email.toLowerCase() });
@@ -83,6 +84,11 @@ export const updateProfile = asyncHandler(async (req, res) => {
     }
 
     if (req.body.password) {
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+      if (req.body.password.length < 6 || !passwordRegex.test(req.body.password)) {
+        res.status(400);
+        throw new Error('Password must be at least 6 characters long and contain both alphabets and numbers');
+      }
       user.password = req.body.password;
     }
 

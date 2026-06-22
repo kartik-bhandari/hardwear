@@ -66,6 +66,11 @@ export default function ProfilePage() {
         setErrorMsg('Password must be at least 6 characters long.');
         return;
       }
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+      if (!passwordRegex.test(password)) {
+        setErrorMsg('Password must contain both letters and numbers.');
+        return;
+      }
       if (password !== confirmPassword) {
         setErrorMsg('Passwords do not match.');
         return;

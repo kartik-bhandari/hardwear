@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="border-t border-brutalist-border bg-brutalist-bg text-brutalist-text font-barlow">
@@ -10,9 +12,9 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex items-center gap-8 text-[14px] text-white-900 tracking-[1px]">
-          <a href="https://instagram.com/hardwear.in" target="_blank" className="hover:text-brutalist-text transition">Instagram</a>
+          <a href="https://instagram.com/hardwear.in" target="_blank" rel="noopener noreferrer" className="hover:text-brutalist-text transition">Instagram</a>
           <a href="#" className="hover:text-brutalist-text transition">Sizing</a>
-          <a href="#" className="hover:text-brutalist-text transition">Contact</a>
+          <Link to="/contact" className="hover:text-brutalist-text transition">Contact</Link>
         </div>
 
         {/* Copyright */}

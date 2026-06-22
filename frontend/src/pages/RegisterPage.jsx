@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
+  const [localError, setLocalError] = useState(null);
 
   useEffect(() => {
     if (resendTimer <= 0) return;
@@ -71,6 +72,12 @@ export default function RegisterPage() {
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
+    setLocalError(null);
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+    if (password.length < 6 || !passwordRegex.test(password)) {
+      setLocalError('Password must be at least 6 characters long and contain both letters and numbers.');
+      return;
+    }
     dispatch(register({ name, email, password })).then((action) => {
       if (action.meta.requestStatus === 'fulfilled') {
         setStep('verify');
@@ -101,8 +108,8 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-black tracking-tight">Create account</h1>
             <p className="mt-1 text-sm text-slate-600">Fast checkout and order tracking.</p>
 
-            {error ? (
-              <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-900">{error}</div>
+            {error || localError ? (
+              <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-900">{error || localError}</div>
             ) : null}
 
             <form className="mt-6 grid gap-4" onSubmit={handleRegisterSubmit}>
