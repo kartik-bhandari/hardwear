@@ -79,5 +79,5 @@ Query params:
 ### Admin
 
 - `GET /orders`
-- `PUT /orders/:id/status` body: `{ "status": "pending|shipped|delivered" }`
+- `PUT /orders/:id/status` body: `{ "status": "pending|delivered" }`
 

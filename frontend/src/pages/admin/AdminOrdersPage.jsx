@@ -55,7 +55,6 @@ export default function AdminOrdersPage() {
                     className="h-9 bg-white border border-slate-200 px-3 text-xs text-slate-900 font-barlow-cond uppercase tracking-wider outline-none cursor-pointer"
                   >
                     <option value="pending">PENDING</option>
-                    <option value="shipped">SHIPPED</option>
                     <option value="delivered">DELIVERED</option>
                   </select>
                 </div>

@@ -238,10 +238,10 @@ export default function ProfilePage() {
                   <input
                     id="email-input"
                     type="email"
-                    required
+                    readOnly
+                    disabled
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    className="w-full bg-zinc-900/50 border border-brutalist-border px-4 py-3 text-xs text-brutalist-muted font-barlow-cond uppercase tracking-wider cursor-not-allowed select-none outline-none"
                     placeholder="Enter email"
                   />
                 </div>

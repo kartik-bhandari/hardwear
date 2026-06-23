@@ -74,7 +74,7 @@ export default function ProductsPage() {
           <button
             type="button"
             onClick={apply}
-            className="h-10 bg-brutalist-orange text-white px-5 text-xs font-bold uppercase tracking-wider hover:bg-[#e63300] cursor-pointer"
+            className="h-10 bg-brutalist-orange text-white px-5 text-xs font-bold uppercase tracking-wider hover:opacity-90 cursor-pointer"
           >
             Apply
           </button>
@@ -189,7 +189,7 @@ export default function ProductsPage() {
             <button
               type="button"
               onClick={apply}
-              className="hidden sm:block h-10 w-full bg-brutalist-orange text-white text-xs font-bold uppercase tracking-wider hover:bg-[#e63300] cursor-pointer"
+              className="hidden sm:block h-10 w-full bg-brutalist-orange text-white text-xs font-bold uppercase tracking-wider hover:opacity-80 cursor-pointer"
             >
               Apply Filters
             </button>

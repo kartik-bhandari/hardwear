@@ -83,7 +83,12 @@ export default function LoginPage() {
           </label>
 
           <label className="grid gap-2">
-            <span className="text-xs font-semibold text-slate-600">Password</span>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-slate-600">Password</span>
+              <Link to="/forgot-password" className="text-xs font-semibold text-brutalist-orange hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}

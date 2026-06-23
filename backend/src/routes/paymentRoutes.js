@@ -2,7 +2,10 @@ import express from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Order from '../models/Order.js';
+import Cart from '../models/Cart.js';
+import Product from '../models/Product.js';
 import { requireAuth } from '../middleware/authMiddleware.js';
+import { sendOrderConfirmationEmail } from '../utils/email.js';
 
 const router = express.Router();
 
@@ -82,6 +85,26 @@ router.post('/verify-payment', requireAuth, async (req, res) => {
     dbOrder.payment.razorpaySignature = razorpay_signature;
 
     await dbOrder.save();
+
+    // 1. Deduct stock for each item in the order
+    try {
+      for (const item of dbOrder.items) {
+        await Product.updateOne(
+          { _id: item.product },
+          { $inc: { stock: -item.qty } }
+        );
+      }
+    } catch (stockErr) {
+      console.error('Error reducing stock on payment verification:', stockErr);
+    }
+
+    // 2. Clear user's cart upon successful verification
+    await Cart.updateOne({ user: dbOrder.user }, { $set: { items: [] } });
+
+    // 3. Send order confirmation email asynchronously
+    sendOrderConfirmationEmail(req.user.email, dbOrder).catch((emailErr) => {
+      console.error('Error sending order confirmation email:', emailErr);
+    });
 
     res.status(200).json({
       success: true,

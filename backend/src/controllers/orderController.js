@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
+import Product from '../models/Product.js';
 
 function calcSubtotal(items) {
   return items.reduce((sum, it) => sum + Number(it.priceAtAdd) * Number(it.qty), 0);
@@ -25,9 +26,29 @@ export const createOrderFromCart = asyncHandler(async (req, res) => {
     throw new Error('Cart is empty');
   }
 
+  // Validate stock for each item in cart
+  const productIds = cart.items.map((it) => it.product);
+  const products = await Product.find({ _id: { $in: productIds } });
+  const productsMap = products.reduce((acc, p) => {
+    acc[p._id.toString()] = p;
+    return acc;
+  }, {});
+
+  for (const item of cart.items) {
+    const product = productsMap[item.product.toString()];
+    if (!product) {
+      res.status(404);
+      throw new Error(`Product "${item.nameAtAdd}" not found in our catalog`);
+    }
+    if (product.stock < item.qty) {
+      res.status(400);
+      throw new Error(`"${product.name}" has only ${product.stock} units remaining in stock.`);
+    }
+  }
+
   const subtotal = calcSubtotal(cart.items);
-  const shipping = subtotal >= 1999 ? 0 : 99;
-  const total = subtotal + shipping;
+  const shipping = 0;
+  const total = subtotal;
 
   const order = await Order.create({
     user: req.user._id,
@@ -48,27 +69,24 @@ export const createOrderFromCart = asyncHandler(async (req, res) => {
     payment: { method: 'mock', isPaid: false },
   });
 
-  cart.items = [];
-  await cart.save();
-
   res.status(201).json({ order });
 });
 
 export const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+  const orders = await Order.find({ user: req.user._id, 'payment.isPaid': true }).sort({ createdAt: -1 });
   res.json({ orders });
 });
 
 export const getAllOrders = asyncHandler(async (_req, res) => {
-  const orders = await Order.find({}).populate('user', 'name email role').sort({ createdAt: -1 });
+  const orders = await Order.find({ 'payment.isPaid': true }).populate('user', 'name email role').sort({ createdAt: -1 });
   res.json({ orders });
 });
 
 export const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
-  if (!status || !['pending', 'shipped', 'delivered'].includes(status)) {
+  if (!status || !['pending', 'delivered'].includes(status)) {
     res.status(400);
-    throw new Error('Valid status is required (pending|shipped|delivered)');
+    throw new Error('Valid status is required (pending|delivered)');
   }
 
   const order = await Order.findById(req.params.id);

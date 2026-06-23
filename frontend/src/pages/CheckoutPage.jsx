@@ -151,7 +151,7 @@ export default function CheckoutPage() {
               Please confirm your mobile number before proceeding to the payment gateway:
             </p>
             <div className="bg-brutalist-bg border border-brutalist-border p-4 text-center rounded-xl">
-              <span className="font-bebas text-2xl tracking-widest text-brutalist-orange">
+              <span className="font-bebas text-2xl tracking-[1px] text-brutalist-orange">
                 +91 {form.phone}
               </span>
             </div>
@@ -165,14 +165,14 @@ export default function CheckoutPage() {
                   setShowConfirmModal(false);
                   processPayment();
                 }}
-                className="flex-1 bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] py-3 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer rounded-lg"
+                className="flex-1 bg-brutalist-orange text-white text-xs font-bold uppercase tracking-[1px] py-3 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer rounded-lg"
               >
                 Confirm & Pay
               </button>
               <button
                 type="button"
                 onClick={() => setShowConfirmModal(false)}
-                className="flex-1 bg-[#222] border border-brutalist-border text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] py-3 hover:bg-[#333] active:scale-[0.98] transition cursor-pointer rounded-lg"
+                className="flex-1 bg-[#222] border border-brutalist-border text-white text-xs font-bold uppercase tracking-[1px] py-3 hover:bg-[#333] active:scale-[0.98] transition cursor-pointer rounded-lg"
               >
                 Edit Number
               </button>
@@ -186,12 +186,6 @@ export default function CheckoutPage() {
           <div>
             <h1 className="font-bebas text-3xl tracking-wide uppercase text-brutalist-text">Checkout</h1>
           </div>
-
-          {placeError || error ? (
-            <div className="border border-rose-900 bg-[#320c11] p-4 text-rose-300 text-xs uppercase tracking-wider font-bold">
-              {placeError || error}
-            </div>
-          ) : null}
 
           <form className="grid sm:grid-cols-2 gap-4" onSubmit={handleSubmit}>
             {[
@@ -215,14 +209,20 @@ export default function CheckoutPage() {
                 />
               </label>
             ))}
+<div className="sm:col-span-2 pt-4">
 
-            <div className="sm:col-span-2 pt-4">
+            {placeError || error ? (
+            <div className="border border-rose-900 bg-[#320c11] p-4 mb-2 text-rose-300 w-full text-xs uppercase tracking-wider font-bold">
+              {placeError || error}
+            </div>
+          ) : null}
+
               <button
                 disabled={placing === 'loading' || isProcessing || !items.length}
-                className="w-full bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:opacity-80 active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
+                className="w-full bg-brutalist-orange text-white text-xs font-bold uppercase tracking-[1px] px-8 py-3.5 hover:opacity-80 active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
                 type="submit"
               >
-                {placing === 'loading' || isProcessing ? 'Processing…' : 'Place order'}
+                {placing === 'loading' || isProcessing ? 'Processing…' : 'Pay Now (Prepaid Only)'}
               </button>
               {!items.length ? <p className="mt-2 text-xs text-brutalist-muted uppercase tracking-wider">Your cart is empty.</p> : null}
             </div>

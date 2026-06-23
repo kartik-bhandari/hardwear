@@ -1,8 +1,9 @@
 import asyncHandler from 'express-async-handler';
+import crypto from 'crypto';
 import User from '../models/User.js';
 import { signToken } from '../utils/token.js';
 import TempUser from '../models/TempUser.js';
-import { sendOTPEmail } from '../utils/email.js';
+import { sendOTPEmail, sendPasswordResetEmail } from '../utils/email.js';
 
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -75,12 +76,8 @@ export const updateProfile = asyncHandler(async (req, res) => {
     user.name = req.body.name || user.name;
 
     if (req.body.email && req.body.email.toLowerCase() !== user.email) {
-      const emailExists = await User.findOne({ email: req.body.email.toLowerCase() });
-      if (emailExists) {
-        res.status(400);
-        throw new Error('Email already in use');
-      }
-      user.email = req.body.email.toLowerCase();
+      res.status(400);
+      throw new Error('Email address cannot be changed');
     }
 
     if (req.body.password) {
@@ -188,5 +185,80 @@ export const verifyOTP = asyncHandler(async (req, res) => {
     token,
   });
 });
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+  res.json({ users });
+});
+
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    res.status(400);
+    throw new Error('Email is required');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    return res.status(200).json({
+      message: 'If the email is registered on our site, a password reset link has been dispatched.',
+    });
+  }
+
+  // Generate reset token
+  const token = crypto.randomBytes(32).toString('hex');
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiry
+  await user.save();
+
+  // Construct reset link
+  const origin = req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+  const cleanOrigin = origin.replace(/\/$/, '');
+  const resetLink = `${cleanOrigin}/reset-password?token=${token}`;
+
+  // Send email
+  await sendPasswordResetEmail(user.email, resetLink);
+
+  res.status(200).json({
+    message: 'If the email is registered on our site, a password reset link has been dispatched.',
+  });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) {
+    res.status(400);
+    throw new Error('Token and password are required');
+  }
+
+  // Validate password strength (min 6 characters, must contain letters and numbers)
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+  if (password.length < 6 || !passwordRegex.test(password)) {
+    res.status(400);
+    throw new Error('Password must be at least 6 characters long and contain both alphabets and numbers');
+  }
+
+  // Find user with matching token and unexpired date
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    res.status(400);
+    throw new Error('Password reset token is invalid or has expired.');
+  }
+
+  // Update password (User model pre-save hook will hash it)
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.status(200).json({
+    message: 'Your password has been successfully updated.',
+  });
+});
+
 
 

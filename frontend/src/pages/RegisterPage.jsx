@@ -202,7 +202,7 @@ export default function RegisterPage() {
 
               <button
                 disabled={status === 'loading'}
-                className="h-11 rounded-2xl bg-brutalist-orange text-white text-sm font-semibold hover:opacity-95 disabled:opacity-50"
+                className="h-11 rounded-2xl bg-brutalist-orange text-white text-sm font-semibold hover:opacity-80 disabled:opacity-50"
                 type="submit"
               >
                 {status === 'loading' ? 'Verifying…' : 'Verify Code'}

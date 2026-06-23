@@ -20,8 +20,8 @@ export default function CartPage() {
 
   const items = cart?.items || [];
   const sub = useMemo(() => subtotal(items), [items]);
-  const shipping = sub >= 1999 ? 0 : items.length ? 99 : 0;
-  const total = sub + shipping;
+  const shipping = 0;
+  const total = sub;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -31,7 +31,7 @@ export default function CartPage() {
           <p className="text-sm text-slate-600 mt-1">Review items before checkout.</p>
         </div>
         <Link to="/products" className="text-sm font-semibold text-slate-900 hover:underline">
-          Continue shopping
+          back
         </Link>
       </div>
 
@@ -140,10 +140,14 @@ export default function CartPage() {
             type="button"
             disabled={!items.length}
             onClick={() => navigate('/checkout')}
-            className="mt-6 w-full h-12 rounded-full bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-40 disabled:hover:bg-slate-900"
+            className="mt-6 w-full h-12 rounded-full bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 disabled:opacity-40 disabled:hover:bg-slate-900 cursor-pointer"
           >
             Checkout
           </button>
+
+          <p className="mt-4 text-[10px] text-center text-violet-100 font-extrabold tracking-[1px]">
+          Currently we are accepting prepaid orders only (UPI/Cards)
+          </p>
 
           {!token ? (
             <p className="mt-4 text-xs text-slate-500">

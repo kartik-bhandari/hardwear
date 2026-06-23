@@ -109,7 +109,7 @@ export default function AboutPage() {
             </div>
             <Link
               to="/products"
-              className="relative z-10 bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-6 py-3 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer"
+              className="relative z-10 bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-6 py-3 hover:opacity-80 active:scale-[0.98] transition cursor-pointer"
             >
               Shop now
             </Link>

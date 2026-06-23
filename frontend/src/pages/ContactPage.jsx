@@ -156,7 +156,7 @@ export default function ContactPage() {
             <div className="sm:col-span-2 pt-2">
               <button
                 type="submit"
-                className="w-full sm:w-auto bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer rounded-lg shadow-sm"
+                className="w-full sm:w-auto bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:opacity-80 active:scale-[0.98] transition cursor-pointer shadow-sm"
               >
                 Send Message
               </button>

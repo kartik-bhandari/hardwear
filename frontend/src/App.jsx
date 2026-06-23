@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
@@ -7,6 +8,8 @@ import CartPage from './pages/CartPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AccountOrdersPage from './pages/AccountOrdersPage';
 import ProfilePage from './pages/ProfilePage';
@@ -16,12 +19,18 @@ import AdminEditProductPage from './pages/admin/AdminEditProductPage';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import RefundPolicyPage from './pages/RefundPolicyPage';
+import ShippingPolicyPage from './pages/ShippingPolicyPage';
 import RequireAuth from './routes/RequireAuth';
 import RequireAdmin from './routes/RequireAdmin';
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="/products" element={<ProductsPage />} />
@@ -30,8 +39,14 @@ export default function App() {
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/refunds" element={<RefundPolicyPage />} />
+        <Route path="/shipping" element={<ShippingPolicyPage />} />
 
         <Route element={<RequireAuth />}>
           <Route path="/checkout" element={<CheckoutPage />} />
@@ -49,5 +64,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
+    </>
   );
 }

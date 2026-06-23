@@ -34,7 +34,7 @@ const orderSchema = new mongoose.Schema(
     subtotal: { type: Number, required: true, min: 0 },
     shipping: { type: Number, required: true, min: 0, default: 0 },
     total: { type: Number, required: true, min: 0 },
-    status: { type: String, enum: ['pending', 'shipped', 'delivered'], default: 'pending' },
+    status: { type: String, enum: ['pending', 'delivered'], default: 'pending' },
     shippingAddress: { type: addressSchema, required: true },
     payment: {
       method: { type: String, default: 'mock' },

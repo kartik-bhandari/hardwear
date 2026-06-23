@@ -6,6 +6,8 @@ const initialState = {
   token: localStorage.getItem('hw_token') || null,
   status: 'idle',
   error: null,
+  users: [],
+  usersStatus: 'idle',
 };
 
 export const login = createAsyncThunk('auth/login', async ({ email, password }, thunkApi) => {
@@ -60,6 +62,15 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (credentia
     return data;
   } catch (e) {
     return thunkApi.rejectWithValue(e?.response?.data?.message || 'Google authentication failed');
+  }
+});
+
+export const fetchUsers = createAsyncThunk('auth/fetchUsers', async (_, thunkApi) => {
+  try {
+    const { data } = await api.get('/api/auth/users');
+    return data.users;
+  } catch (e) {
+    return thunkApi.rejectWithValue(e?.response?.data?.message || 'Failed to load users');
   }
 });
 
@@ -148,6 +159,16 @@ export const authSlice = createSlice({
       .addCase(googleLogin.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload || 'Google authentication failed';
+      })
+      .addCase(fetchUsers.pending, (state) => {
+        state.usersStatus = 'loading';
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.usersStatus = 'succeeded';
+        state.users = action.payload;
+      })
+      .addCase(fetchUsers.rejected, (state) => {
+        state.usersStatus = 'failed';
       });
   },
 });

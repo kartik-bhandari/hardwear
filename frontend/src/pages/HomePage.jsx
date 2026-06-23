@@ -98,7 +98,7 @@ export default function HomePage() {
       <section className="bg-brutalist-orange py-3 overflow-hidden border-b border-brutalist-border select-none pointer-events-none">
         <div className="hw-ticker-inner whitespace-nowrap flex">
           <span className="font-bebas text-sm text-white tracking-[4px] px-10">
-            Free shipping above ₹1499 <span className="opacity-50 px-2">///</span>
+            Free shipping on all orders <span className="opacity-50 px-2">///</span>
           </span>
           <span className="font-bebas text-sm text-white tracking-[4px] px-10">
             New drop every Friday <span className="opacity-50 px-2">///</span>
@@ -111,7 +111,7 @@ export default function HomePage() {
           </span>
           {/* Duplicate for seamless infinite marquee loop */}
           <span className="font-bebas text-sm text-white tracking-[4px] px-10">
-            Free shipping above ₹1499 <span className="opacity-50 px-2">///</span>
+            Free shipping on all orders <span className="opacity-50 px-2">///</span>
           </span>
           <span className="font-bebas text-sm text-white tracking-[4px] px-10">
             New drop every Friday <span className="opacity-50 px-2">///</span>
@@ -170,7 +170,7 @@ export default function HomePage() {
               Free shipping
             </div>
             <div className="text-[12px] text-brutalist-muted uppercase tracking-[1px] mt-0.5">
-              On orders above ₹1499
+              On all prepaid orders nationwide
             </div>
           </div>
         </div>

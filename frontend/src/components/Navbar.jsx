@@ -141,44 +141,44 @@ export default function Navbar() {
           {user ? (
             <div className="hidden sm:block relative" ref={dropdownRef}>
               <button
-                className="inline-flex items-center align-middle gap-1 text-sm font-barlow-cond tracking-[2px] text-brutalist-muted hover:text-brutalist-text transition cursor-pointer focus:outline-none"
+                className="inline-flex items-center align-middle gap-1.5 text-sm sm:text-base font-barlow-cond tracking-[2px] text-brutalist-muted hover:text-brutalist-text transition cursor-pointer focus:outline-none"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 type="button"
                 aria-expanded={dropdownOpen}
                 aria-haspopup="true"
               >
-                <User className="h-5 w-5" />
+                <User className="h-5.5 w-5.5" />
                 <span className="font-bold">{user.name}</span>
-                <ChevronDown className={`h-3.5 w-3.5 text-brutalist-muted transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-4 w-4 text-brutalist-muted transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-3 w-48 border border-brutalist-border bg-brutalist-bg py-2 z-50 origin-top-right">
-                  <div className="px-4 py-2 border-b border-brutalist-border mb-1">
-                    <p className="text-xs font-bold text-brutalist-text truncate">{user.name}</p>
-                    <p className="text-[12px] text-brutalist-muted truncate">{user.email}</p>
+                <div className="absolute right-0 mt-3 w-72 border border-brutalist-border bg-brutalist-bg py-4 z-50 origin-top-right shadow-lg">
+                  <div className="px-6 py-3 border-b border-brutalist-border mb-3">
+                    <p className="text-base font-bold text-brutalist-text truncate">{user.name}</p>
+                    <p className="text-sm text-brutalist-muted truncate mt-0.5">{user.email}</p>
                   </div>
 
                   <Link
                     to="/profile"
-                    className="flex items-center gap-2 px-4 py-2 text-xs font-barlow-cond uppercase tracking-wider text-brutalist-muted hover:text-brutalist-text hover:bg-brutalist-card transition-colors w-full text-left"
+                    className="flex items-center gap-3 px-6 py-3 text-base font-barlow-cond uppercase tracking-wider text-brutalist-muted hover:text-brutalist-text hover:bg-brutalist-card transition-colors w-full text-left"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    <User className="w-3.5 h-3.5" />
+                    <User className="w-5 h-5 text-brutalist-orange" />
                     My Profile
                   </Link>
 
                   <Link
                     to="/wishlist"
-                    className="flex items-center justify-between px-4 py-2 text-xs font-barlow-cond uppercase tracking-wider text-brutalist-muted hover:text-brutalist-text hover:bg-brutalist-card transition-colors w-full text-left"
+                    className="flex items-center justify-between px-6 py-3 text-base font-barlow-cond uppercase tracking-wider text-brutalist-muted hover:text-brutalist-text hover:bg-brutalist-card transition-colors w-full text-left"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    <span className="flex items-center gap-2">
-                      <Heart className="w-3.5 h-3.5" />
+                    <span className="flex items-center gap-3">
+                      <Heart className="w-5 h-5 text-brutalist-orange" />
                       My Wishlist
                     </span>
                     {wishlistCount ? (
-                      <span className="bg-brutalist-orange text-white text-[9px] font-bold px-1.5 py-0.5">
+                      <span className="bg-brutalist-orange text-white text-[10px] font-bold px-2 py-0.5">
                         {wishlistCount}
                       </span>
                     ) : null}
@@ -186,23 +186,23 @@ export default function Navbar() {
 
                   <Link
                     to="/account/orders"
-                    className="flex items-center gap-2 px-4 py-2 text-xs font-barlow-cond uppercase tracking-wider text-brutalist-muted hover:text-brutalist-text hover:bg-brutalist-card transition-colors w-full text-left"
+                    className="flex items-center gap-3 px-6 py-3 text-base font-barlow-cond uppercase tracking-wider text-brutalist-muted hover:text-brutalist-text hover:bg-brutalist-card transition-colors w-full text-left"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <ShoppingBag className="w-5 h-5 text-brutalist-orange" />
                     My Orders
                   </Link>
 
                   <button
                     type="button"
-                    className="flex items-center gap-2 px-4 py-2 text-xs font-barlow-cond uppercase tracking-wider text-red-700 hover:bg-brutalist-card transition-colors w-full text-left font-bold border-t border-brutalist-border mt-1 cursor-pointer"
+                    className="flex items-center gap-3 px-6 py-3 text-base font-barlow-cond uppercase tracking-wider text-red-500 hover:bg-brutalist-card transition-colors w-full text-left font-bold border-t border-brutalist-border mt-3 cursor-pointer"
                     onClick={() => {
                       setDropdownOpen(false);
                       dispatch(logout());
                       navigate('/');
                     }}
                   >
-                    <LogOut className="w-3.5 h-3.5" />
+                    <LogOut className="w-5 h-5" />
                     Logout
                   </button>
                 </div>

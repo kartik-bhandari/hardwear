@@ -129,9 +129,9 @@ export default function ProductPage() {
                       key={sz}
                       type="button"
                       onClick={() => setSize(sz)}
-                      className={`h-10 min-w-10 px-3 text-xs font-semibold border rounded-lg hover:border-slate-900 ${
+                      className={`h-10 min-w-10 px-3 text-xs font-semibold border hover:border-slate-900 ${
                         sz === size
-                          ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
+                          ? 'border-slate-900 bg-brutalist-orange text-white shadow-sm'
                           : 'border-slate-200 bg-white text-slate-900'
                       }`}
                     >
@@ -151,9 +151,9 @@ export default function ProductPage() {
                       key={col}
                       type="button"
                       onClick={() => setColor(col)}
-                      className={`h-7 px-3 text-[11px] font-bold tracking-wider uppercase border rounded-full hover:border-slate-900 ${
+                      className={`h-7 px-3 text-[11px] font-bold tracking-wider uppercase border hover:border-slate-900 ${
                         col === color
-                          ? 'border-slate-900 bg-slate-900 text-white shadow-xs'
+                          ? 'border-slate-900 bg-brutalist-orange text-white shadow-xs'
                           : 'border-slate-200 bg-white text-slate-600'
                       }`}
                     >
@@ -171,7 +171,7 @@ export default function ProductPage() {
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="h-10 w-10 grid place-items-center text-slate-700 hover:bg-slate-50 "
+                    className="h-10 w-10 grid place-items-center text-slate-50 hover:bg-white hover:text-slate-700"
                   >
                     −
                   </button>
@@ -179,7 +179,7 @@ export default function ProductPage() {
                   <button
                     type="button"
                     onClick={() => setQty((q) => q + 1)}
-                    className="h-10 w-10 grid place-items-center text-slate-700 hover:bg-slate-50"
+                    className="h-10 w-10 grid place-items-center text-slate-50 hover:bg-white hover:text-slate-700"
                   >
                     +
                   </button>
