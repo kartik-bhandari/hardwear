@@ -60,7 +60,7 @@ export const login = asyncHandler(async (req, res) => {
 
   const token = signToken(user._id.toString());
   res.json({
-    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    user: { id: user._id, name: user.name, email: user.email, role: user.role, savedAddress: user.savedAddress },
     token,
   });
 });
@@ -89,6 +89,10 @@ export const updateProfile = asyncHandler(async (req, res) => {
       user.password = req.body.password;
     }
 
+    if (req.body.savedAddress !== undefined) {
+      user.savedAddress = req.body.savedAddress;
+    }
+
     const updatedUser = await user.save();
     const token = signToken(updatedUser._id.toString());
 
@@ -98,6 +102,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         role: updatedUser.role,
+        savedAddress: updatedUser.savedAddress,
       },
       token,
     });
@@ -140,7 +145,7 @@ export const googleAuth = asyncHandler(async (req, res) => {
 
   const token = signToken(user._id.toString());
   res.json({
-    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    user: { id: user._id, name: user.name, email: user.email, role: user.role, savedAddress: user.savedAddress },
     token,
   });
 });
@@ -181,7 +186,7 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   const token = signToken(user._id.toString());
 
   res.status(201).json({
-    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    user: { id: user._id, name: user.name, email: user.email, role: user.role, savedAddress: user.savedAddress },
     token,
   });
 });

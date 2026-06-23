@@ -32,6 +32,16 @@ export default function ProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [prevUser, setPrevUser] = useState(user);
 
+  // Shipping Address states
+  const [shippingName, setShippingName] = useState(user?.savedAddress?.fullName || '');
+  const [shippingPhone, setShippingPhone] = useState(user?.savedAddress?.phone || '');
+  const [line1, setLine1] = useState(user?.savedAddress?.line1 || '');
+  const [line2, setLine2] = useState(user?.savedAddress?.line2 || '');
+  const [city, setCity] = useState(user?.savedAddress?.city || '');
+  const [state, setState] = useState(user?.savedAddress?.state || '');
+  const [postalCode, setPostalCode] = useState(user?.savedAddress?.postalCode || '');
+  const [country, setCountry] = useState(user?.savedAddress?.country || 'India');
+
   // Status message states
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(false);
@@ -41,6 +51,14 @@ export default function ProfilePage() {
     setPrevUser(user);
     setName(user?.name || '');
     setEmail(user?.email || '');
+    setShippingName(user?.savedAddress?.fullName || '');
+    setShippingPhone(user?.savedAddress?.phone || '');
+    setLine1(user?.savedAddress?.line1 || '');
+    setLine2(user?.savedAddress?.line2 || '');
+    setCity(user?.savedAddress?.city || '');
+    setState(user?.savedAddress?.state || '');
+    setPostalCode(user?.savedAddress?.postalCode || '');
+    setCountry(user?.savedAddress?.country || 'India');
   }
 
   useEffect(() => {
@@ -77,8 +95,31 @@ export default function ProfilePage() {
       }
     }
 
+    if (shippingPhone.trim()) {
+      const cleanedPhone = shippingPhone.replace(/\D/g, '');
+      if (cleanedPhone.length !== 10) {
+        setErrorMsg('Phone number must be exactly 10 digits.');
+        return;
+      }
+    }
+
     try {
-      const resultAction = await dispatch(updateProfile({ name, email, password })).unwrap();
+      const resultAction = await dispatch(
+        updateProfile({
+          name,
+          password,
+          savedAddress: {
+            fullName: shippingName,
+            phone: shippingPhone,
+            line1,
+            line2,
+            city,
+            state,
+            postalCode,
+            country,
+          },
+        })
+      ).unwrap();
       if (resultAction) {
         setSuccessMsg(true);
         setPassword('');
@@ -204,13 +245,6 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {errorMsg && (
-                <div className="flex items-center gap-3 border border-rose-900 bg-[#320c11] p-4 text-rose-300 text-xs uppercase tracking-wider font-bold">
-                  <AlertCircle className="w-4 h-4 text-rose-500 flex-shrink-0" />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Name */}
                 <div className="space-y-2">
@@ -243,6 +277,133 @@ export default function ProfilePage() {
                     value={email}
                     className="w-full bg-zinc-900/50 border border-brutalist-border px-4 py-3 text-xs text-brutalist-muted font-barlow-cond uppercase tracking-wider cursor-not-allowed select-none outline-none"
                     placeholder="Enter email"
+                  />
+                </div>
+              </div>
+
+              <div className="border-t border-brutalist-border my-6"></div>
+
+              <h3 className="text-xs font-bold uppercase tracking-widest text-brutalist-text mb-1">Saved Shipping Address</h3>
+              <p className="text-[12px] text-brutalist-muted uppercase tracking-wider mb-4">Set your default shipping address for faster checkout.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Shipping Full Name */}
+                <div className="space-y-2">
+                  <label htmlFor="shipping-name-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    Shipping Full Name
+                  </label>
+                  <input
+                    id="shipping-name-input"
+                    type="text"
+                    value={shippingName}
+                    onChange={(e) => setShippingName(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="e.g. John Doe"
+                  />
+                </div>
+
+                {/* Shipping Phone */}
+                <div className="space-y-2">
+                  <label htmlFor="shipping-phone-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    Phone Number
+                  </label>
+                  <input
+                    id="shipping-phone-input"
+                    type="text"
+                    value={shippingPhone}
+                    onChange={(e) => setShippingPhone(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="10-digit phone number"
+                  />
+                </div>
+
+                {/* Line 1 */}
+                <div className="space-y-2 md:col-span-2">
+                  <label htmlFor="line1-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    Address Line 1
+                  </label>
+                  <input
+                    id="line1-input"
+                    type="text"
+                    value={line1}
+                    onChange={(e) => setLine1(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="Flat, House no., Building, Company, Apartment"
+                  />
+                </div>
+
+                {/* Line 2 */}
+                <div className="space-y-2 md:col-span-2">
+                  <label htmlFor="line2-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    Address Line 2
+                  </label>
+                  <input
+                    id="line2-input"
+                    type="text"
+                    value={line2}
+                    onChange={(e) => setLine2(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="Area, Street, Sector, Village"
+                  />
+                </div>
+
+                {/* City */}
+                <div className="space-y-2">
+                  <label htmlFor="city-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    City
+                  </label>
+                  <input
+                    id="city-input"
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="City"
+                  />
+                </div>
+
+                {/* State */}
+                <div className="space-y-2">
+                  <label htmlFor="state-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    State
+                  </label>
+                  <input
+                    id="state-input"
+                    type="text"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="State"
+                  />
+                </div>
+
+                {/* Postal Code */}
+                <div className="space-y-2">
+                  <label htmlFor="postal-code-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    Postal Code
+                  </label>
+                  <input
+                    id="postal-code-input"
+                    type="text"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="6-digit PIN code"
+                  />
+                </div>
+
+                {/* Country */}
+                <div className="space-y-2">
+                  <label htmlFor="country-input" className="text-[10px] font-bold uppercase tracking-widest text-brutalist-muted">
+                    Country
+                  </label>
+                  <input
+                    id="country-input"
+                    type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
+                    placeholder="India"
                   />
                 </div>
               </div>
@@ -286,12 +447,19 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+                            {errorMsg && (
+                <div className="flex items-center gap-3 border border-rose-900 bg-[#320c11] p-4 text-rose-300 text-xs uppercase tracking-wider font-bold">
+                  <AlertCircle className="w-4 h-4 text-rose-500 flex-shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
               {/* Submit Button */}
               <div className="flex justify-end pt-4">
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:opacity-80 active:scale-[0.98] transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {status === 'loading' ? (
                     <>

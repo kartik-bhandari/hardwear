@@ -46,9 +46,9 @@ export const verifyOTP = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   'auth/updateProfile',
-  async ({ name, email, password }, thunkApi) => {
+  async (updates, thunkApi) => {
     try {
-      const { data } = await api.put('/api/auth/profile', { name, email, password });
+      const { data } = await api.put('/api/auth/profile', updates);
       return data;
     } catch (e) {
       return thunkApi.rejectWithValue(e?.response?.data?.message || 'Profile update failed');

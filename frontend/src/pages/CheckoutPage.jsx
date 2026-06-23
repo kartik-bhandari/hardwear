@@ -3,17 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { placeOrder, clearLastOrder } from '../features/orders/ordersSlice';
 import { fetchCart } from '../features/cart/cartSlice';
+import { updateProfile } from '../features/auth/authSlice';
 import { api } from '../app/apiClient';
 
 export default function CheckoutPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((s) => s.auth);
   const items = useSelector((s) => s.cart.cart?.items || []);
   const { placing, placeError } = useSelector((s) => s.orders);
 
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [saveAddress, setSaveAddress] = useState(true);
   const [form, setForm] = useState({
     fullName: '',
     phone: '',
@@ -24,6 +27,22 @@ export default function CheckoutPage() {
     postalCode: '',
     country: 'India',
   });
+
+  // Pre-populate with saved address if available
+  useEffect(() => {
+    if (user?.savedAddress) {
+      setForm({
+        fullName: user.savedAddress.fullName || '',
+        phone: user.savedAddress.phone || '',
+        line1: user.savedAddress.line1 || '',
+        line2: user.savedAddress.line2 || '',
+        city: user.savedAddress.city || '',
+        state: user.savedAddress.state || '',
+        postalCode: user.savedAddress.postalCode || '',
+        country: user.savedAddress.country || 'India',
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     dispatch(clearLastOrder());
@@ -98,6 +117,11 @@ export default function CheckoutPage() {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             });
+
+            // Save address if checkbox is checked
+            if (saveAddress) {
+              await dispatch(updateProfile({ savedAddress: form })).unwrap();
+            }
 
             // Clear and navigate
             dispatch(clearLastOrder());
@@ -209,7 +233,18 @@ export default function CheckoutPage() {
                 />
               </label>
             ))}
-<div className="sm:col-span-2 pt-4">
+
+            <label className="sm:col-span-2 flex items-center gap-2 mt-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={saveAddress}
+                onChange={(e) => setSaveAddress(e.target.checked)}
+                className="h-4 w-4 accent-brutalist-orange bg-brutalist-bg border border-brutalist-border rounded outline-none focus:ring-0 cursor-pointer"
+              />
+              <span className="text-xs font-bold uppercase tracking-wider text-brutalist-muted">Save this address for future orders</span>
+            </label>
+
+            <div className="sm:col-span-2 pt-4">
 
             {placeError || error ? (
             <div className="border border-rose-900 bg-[#320c11] p-4 mb-2 text-rose-300 w-full text-xs uppercase tracking-wider font-bold">
