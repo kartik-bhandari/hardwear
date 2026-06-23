@@ -76,7 +76,7 @@ export default function ContactPage() {
                     rel="noopener noreferrer" 
                     className="text-sm font-semibold hover:text-brutalist-orange transition hover:underline mt-0.5 block"
                   >
-                    @hardwear.in
+                    @hardwear.live
                   </a>
                 </div>
               </div>
