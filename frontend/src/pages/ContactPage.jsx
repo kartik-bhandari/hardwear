@@ -71,7 +71,7 @@ export default function ContactPage() {
                 <div>
                   <div className="text-[10px] text-brutalist-darkMuted uppercase tracking-widest font-bold">Direct message</div>
                   <a 
-                    href="https://instagram.com/hardwear.in" 
+                    href="https://instagram.com/hardwear.live" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="text-sm font-semibold hover:text-brutalist-orange transition hover:underline mt-0.5 block"
