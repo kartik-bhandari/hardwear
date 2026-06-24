@@ -24,10 +24,43 @@ export default function AdminProductsPage() {
   const [err, setErr] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProducts({ sort: 'newest' }));
   }, [dispatch]);
+
+  async function handleImageUpload(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    setErr(null);
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('images', files[i]);
+    }
+
+    try {
+      const { data } = await api.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (data.urls && data.urls.length > 0) {
+        setForm((f) => ({
+          ...f,
+          images: [...f.images.filter(Boolean), ...data.urls],
+        }));
+      }
+    } catch (err) {
+      setErr(err?.response?.data?.message || 'Failed to upload images');
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function create() {
     setBusy(true);
@@ -174,15 +207,88 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              {/* Image URL */}
-              <div className="space-y-1">
-                <span className="text-[12px] font-bold uppercase tracking-widest text-brutalist-muted">Image URL</span>
-                <input
-                  value={form.images[0] || ''}
-                  onChange={(e) => setForm((f) => ({ ...f, images: [e.target.value] }))}
-                  className="w-full bg-brutalist-bg border border-brutalist-border px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted"
-                  placeholder="https://…"
-                />
+              {/* Images Manager */}
+              <div className="space-y-2">
+                <span className="text-[12px] font-bold uppercase tracking-widest text-brutalist-muted block">
+                  Product Images
+                </span>
+
+                {/* Thumbnail Previews Grid */}
+                {form.images.filter(Boolean).length > 0 ? (
+                  <div className="grid grid-cols-4 gap-2 border border-brutalist-border bg-brutalist-bg p-3">
+                    {form.images.filter(Boolean).map((img, idx) => (
+                      <div key={idx} className="relative aspect-square border border-zinc-800 bg-[#0c0c0e] rounded-lg overflow-hidden group">
+                        <img src={img} alt="" className="h-full w-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = form.images.filter((_, i) => i !== idx);
+                            setForm(f => ({ ...f, images: updated.length ? updated : [''] }));
+                          }}
+                          className="absolute inset-0 bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer text-xs font-bold text-rose-500 uppercase tracking-widest"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="border border-zinc-800 bg-[#0c0c0e] p-4 text-center text-xs uppercase tracking-wider text-brutalist-darkMuted rounded-lg">
+                    No images added yet
+                  </div>
+                )}
+
+                {/* Upload Action */}
+                <div className="flex gap-2">
+                  <label className="flex-1 border border-dashed border-zinc-700 bg-brutalist-bg hover:bg-zinc-900 transition px-4 py-3 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider cursor-pointer text-center flex items-center justify-center min-h-[44px] select-none">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                      className="hidden"
+                    />
+                    {uploading ? 'Uploading images...' : 'Upload multiple images'}
+                  </label>
+                </div>
+
+                {/* Or add manually via URL */}
+                <div className="space-y-1 pt-1">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-brutalist-darkMuted">Or add image by URL</span>
+                  <div className="flex gap-2">
+                    <input
+                      id="manual-url-input"
+                      type="text"
+                      className="flex-1 bg-brutalist-bg border border-brutalist-border px-3 py-2 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider placeholder-brutalist-darkMuted outline-none"
+                      placeholder="https://..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = e.target.value.trim();
+                          if (val) {
+                            setForm(f => ({ ...f, images: [...f.images.filter(Boolean), val] }));
+                            e.target.value = '';
+                          }
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById('manual-url-input');
+                        const val = input?.value?.trim();
+                        if (val) {
+                          setForm(f => ({ ...f, images: [...f.images.filter(Boolean), val] }));
+                          if (input) input.value = '';
+                        }
+                      }}
+                      className="bg-brutalist-bg border border-brutalist-border hover:bg-zinc-900 px-3 py-2 text-xs text-brutalist-text font-barlow-cond uppercase tracking-wider transition cursor-pointer"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Description */}
@@ -213,7 +319,7 @@ export default function AdminProductsPage() {
               <div className="pt-4">
                 <button
                   type="button"
-                  disabled={busy || !form.name}
+                  disabled={busy || uploading || !form.name}
                   onClick={create}
                   className="w-full bg-brutalist-orange text-white font-barlow-cond text-xs font-bold uppercase tracking-[2px] px-8 py-3.5 hover:bg-[#e63300] active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
                 >

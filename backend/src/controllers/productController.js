@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Product from '../models/Product.js';
+import { normalizeProduct } from '../utils/url.js';
 
 function slugify(input) {
   return String(input || '')
@@ -38,7 +39,8 @@ export const listProducts = asyncHandler(async (req, res) => {
   };
 
   const products = await Product.find(filter).sort(sortMap[sort] || sortMap.newest);
-  res.json({ products });
+  const normalized = products.map((p) => normalizeProduct(p, req));
+  res.json({ products: normalized });
 });
 
 export const getProduct = asyncHandler(async (req, res) => {
@@ -52,7 +54,7 @@ export const getProduct = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Product not found');
   }
-  res.json({ product });
+  res.json({ product: normalizeProduct(product, req) });
 });
 
 export const createProduct = asyncHandler(async (req, res) => {
@@ -83,7 +85,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     category: category || 'T-Shirts',
   });
 
-  res.status(201).json({ product });
+  res.status(201).json({ product: normalizeProduct(product, req) });
 });
 
 export const updateProduct = asyncHandler(async (req, res) => {
@@ -103,7 +105,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
 
   const saved = await product.save();
-  res.json({ product: saved });
+  res.json({ product: normalizeProduct(saved, req) });
 });
 
 export const deleteProduct = asyncHandler(async (req, res) => {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
@@ -20,6 +20,30 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1);
   const [showToast, setShowToast] = useState(false);
 
+  const containerRef = useRef(null);
+
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    const scrollLeft = container.scrollLeft;
+    const width = container.clientWidth || 1;
+    const newIdx = Math.round(scrollLeft / width);
+    if (newIdx !== imgIdx && newIdx >= 0 && newIdx < (product?.images?.length || 0)) {
+      setImgIdx(newIdx);
+    }
+  };
+
+  const handleThumbnailClick = (idx) => {
+    setImgIdx(idx);
+    if (containerRef.current) {
+      const container = containerRef.current;
+      container.scrollTo({
+        left: idx * container.clientWidth,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   useEffect(() => {
     dispatch(fetchProduct(slug));
   }, [dispatch, slug]);
@@ -36,6 +60,9 @@ export default function ProductPage() {
     setSize(product.sizes?.[0] || 'M');
     setColor(product.colors?.[0] || '');
     setQty(1);
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = 0;
+    }
   }, [product?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isWished = useMemo(() => {
@@ -88,11 +115,21 @@ export default function ProductPage() {
 
       <div className="mt-6 grid lg:grid-cols-2 gap-10">
         <div>
-          <div className="aspect-square overflow-hidden border border-slate-200 bg-slate-100">
-            {mainImg ? (
-              <img src={mainImg} alt={product.name} className="h-full w-full object-cover" />
+          <div 
+            ref={containerRef}
+            onScroll={handleScroll}
+            className="aspect-square flex overflow-x-auto snap-x snap-mandatory border border-slate-200 bg-slate-100 scrollbar-none scroll-smooth"
+          >
+            {product.images?.length ? (
+              product.images.map((img, idx) => (
+                <div key={img} className="w-full h-full shrink-0 snap-center relative aspect-square">
+                  <img src={img} alt={`${product.name} ${idx + 1}`} className="h-full w-full object-cover" />
+                </div>
+              ))
             ) : (
-              <div className="h-full w-full grid place-items-center text-slate-400">No image</div>
+              <div className="w-full h-full shrink-0 grid place-items-center text-slate-400">
+                No image
+              </div>
             )}
           </div>
           {product.images?.length > 1 ? (
@@ -101,7 +138,7 @@ export default function ProductPage() {
                 <button
                   key={img}
                   type="button"
-                  onClick={() => setImgIdx(idx)}
+                  onClick={() => handleThumbnailClick(idx)}
                   className={`h-20 w-20 shrink-0 border bg-slate-100 overflow-hidden ${
                     idx === imgIdx ? 'border-slate-900 ring-1 ring-slate-900' : 'border-slate-200'
                   }`}

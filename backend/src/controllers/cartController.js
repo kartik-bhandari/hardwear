@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
+import { normalizeCart } from '../utils/url.js';
 
 async function getOrCreateCart(userId) {
   let cart = await Cart.findOne({ user: userId });
@@ -10,7 +11,7 @@ async function getOrCreateCart(userId) {
 
 export const getCart = asyncHandler(async (req, res) => {
   const cart = await getOrCreateCart(req.user._id);
-  res.json({ cart });
+  res.json({ cart: normalizeCart(cart, req) });
 });
 
 export const addToCart = asyncHandler(async (req, res) => {
@@ -57,7 +58,7 @@ export const addToCart = asyncHandler(async (req, res) => {
   }
 
   await cart.save();
-  res.status(201).json({ cart });
+  res.status(201).json({ cart: normalizeCart(cart, req) });
 });
 
 export const updateCartItem = asyncHandler(async (req, res) => {
@@ -76,7 +77,7 @@ export const updateCartItem = asyncHandler(async (req, res) => {
   }
   cart.items[idx].qty = Math.max(1, Number(qty));
   await cart.save();
-  res.json({ cart });
+  res.json({ cart: normalizeCart(cart, req) });
 });
 
 export const removeCartItem = asyncHandler(async (req, res) => {
@@ -91,13 +92,13 @@ export const removeCartItem = asyncHandler(async (req, res) => {
     (it) => !(it.product.toString() === productId && it.size === size && it.color === color),
   );
   await cart.save();
-  res.json({ cart });
+  res.json({ cart: normalizeCart(cart, req) });
 });
 
 export const clearCart = asyncHandler(async (req, res) => {
   const cart = await getOrCreateCart(req.user._id);
   cart.items = [];
   await cart.save();
-  res.json({ cart });
+  res.json({ cart: normalizeCart(cart, req) });
 });
 

@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
+import { normalizeOrder } from '../utils/url.js';
 
 function calcSubtotal(items) {
   return items.reduce((sum, it) => sum + Number(it.priceAtAdd) * Number(it.qty), 0);
@@ -69,17 +70,19 @@ export const createOrderFromCart = asyncHandler(async (req, res) => {
     payment: { method: 'mock', isPaid: false },
   });
 
-  res.status(201).json({ order });
+  res.status(201).json({ order: normalizeOrder(order, req) });
 });
 
 export const getMyOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id, 'payment.isPaid': true }).sort({ createdAt: -1 });
-  res.json({ orders });
+  const normalized = orders.map((o) => normalizeOrder(o, req));
+  res.json({ orders: normalized });
 });
 
 export const getAllOrders = asyncHandler(async (_req, res) => {
   const orders = await Order.find({ 'payment.isPaid': true }).populate('user', 'name email role').sort({ createdAt: -1 });
-  res.json({ orders });
+  const normalized = orders.map((o) => normalizeOrder(o, req));
+  res.json({ orders: normalized });
 });
 
 export const updateOrderStatus = asyncHandler(async (req, res) => {
@@ -97,6 +100,6 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
 
   order.status = status;
   const saved = await order.save();
-  res.json({ order: saved });
+  res.json({ order: normalizeOrder(saved, req) });
 });
 
