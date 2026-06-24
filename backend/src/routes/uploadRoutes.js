@@ -51,16 +51,29 @@ const upload = multer({
 });
 
 router.post('/', requireAuth, requireAdmin, (req, res) => {
-  if (!isCloudinaryConfigured) {
-    return res.status(400).json({ 
-      message: 'Cloudinary credentials are not configured in the server .env file.' 
-    });
-  }
-
   upload.array('images', 10)(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ message: err.message });
     }
+
+    const hasConfig = 
+      process.env.CLOUDINARY_CLOUD_NAME && 
+      process.env.CLOUDINARY_API_KEY && 
+      process.env.CLOUDINARY_API_SECRET;
+
+    if (!hasConfig) {
+      if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+        });
+      }
+      return res.status(400).json({ 
+        message: 'Cloudinary credentials are not configured in the server .env file.' 
+      });
+    }
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No files uploaded' });
     }
