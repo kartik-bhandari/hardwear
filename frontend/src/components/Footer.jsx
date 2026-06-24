@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <div className="hidden md:block select-none">
-            <img src="/logo.svg" alt="HARD-WEAR Logo" className="h-8 w-auto opacity-45 hover:opacity-100 transition-opacity duration-300" />
+            <img src="/logo.png" alt="HARD-WEAR Logo" className="h-8 w-auto hover:opacity-50 transition-opacity duration-300" />
           </div>
 
           {/* Links */}

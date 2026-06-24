@@ -96,7 +96,7 @@ export default function Navbar() {
         )}
 
         <Link to="/" className="transition hover:opacity-85" onClick={() => setMobileMenuOpen(false)}>
-          <img src="/logo.svg" alt="HARD-WEAR Logo" className="h-10 w-auto sm:h-14 sm:w-auto" />
+          <img src="/logo.png" alt="HARD-WEAR Logo" className="h-10 w-auto sm:h-14 sm:w-auto" />
         </Link>
 
         <div className="flex items-center gap-3 sm:gap-6">
