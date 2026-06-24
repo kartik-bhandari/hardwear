@@ -79,7 +79,7 @@ export const getMyOrders = asyncHandler(async (req, res) => {
   res.json({ orders: normalized });
 });
 
-export const getAllOrders = asyncHandler(async (_req, res) => {
+export const getAllOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ 'payment.isPaid': true }).populate('user', 'name email role').sort({ createdAt: -1 });
   const normalized = orders.map((o) => normalizeOrder(o, req));
   res.json({ orders: normalized });

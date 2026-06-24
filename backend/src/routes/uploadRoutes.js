@@ -2,9 +2,23 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { v2 as cloudinary } from 'cloudinary';
 import { requireAuth, requireAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
+const isCloudinaryConfigured = 
+  process.env.CLOUDINARY_CLOUD_NAME && 
+  process.env.CLOUDINARY_API_KEY && 
+  process.env.CLOUDINARY_API_SECRET;
+
+if (isCloudinaryConfigured) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+}
 
 const uploadDir = 'uploads';
 if (!fs.existsSync(uploadDir)) {
@@ -37,15 +51,43 @@ const upload = multer({
 });
 
 router.post('/', requireAuth, requireAdmin, (req, res) => {
-  upload.array('images', 10)(req, res, (err) => {
+  if (!isCloudinaryConfigured) {
+    return res.status(400).json({ 
+      message: 'Cloudinary credentials are not configured in the server .env file.' 
+    });
+  }
+
+  upload.array('images', 10)(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ message: err.message });
     }
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: 'No files uploaded' });
     }
-    const urls = req.files.map((file) => `/uploads/${file.filename}`);
-    res.json({ urls });
+
+    try {
+      const uploadPromises = req.files.map(async (file) => {
+        try {
+          const result = await cloudinary.uploader.upload(file.path, {
+            folder: 'hardwear_products',
+          });
+          fs.unlinkSync(file.path);
+          return result.secure_url;
+        } catch (uploadErr) {
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+          throw uploadErr;
+        }
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      res.json({ urls });
+    } catch (uploadErr) {
+      res.status(500).json({ 
+        message: `Failed to upload one or more images to Cloudinary: ${uploadErr.message}` 
+      });
+    }
   });
 });
 

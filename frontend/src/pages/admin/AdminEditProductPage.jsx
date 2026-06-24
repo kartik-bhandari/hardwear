@@ -262,7 +262,7 @@ export default function AdminEditProductPage() {
           {form.images.filter(Boolean).length > 0 ? (
             <div className="grid grid-cols-4 gap-2 border border-brutalist-border bg-brutalist-bg p-3">
               {form.images.filter(Boolean).map((img, idx) => (
-                <div key={idx} className="relative aspect-square border border-zinc-800 bg-[#0c0c0e] rounded-lg overflow-hidden group">
+                <div key={idx} className="relative aspect-square border border-zinc-800 bg-[#0c0c0e] rounded-lg overflow-hidden">
                   <img src={img} alt="" className="h-full w-full object-cover" />
                   <button
                     type="button"
@@ -270,9 +270,10 @@ export default function AdminEditProductPage() {
                       const updated = form.images.filter((_, i) => i !== idx);
                       setForm(f => ({ ...f, images: updated.length ? updated : [''] }));
                     }}
-                    className="absolute inset-0 bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer text-xs font-bold text-rose-500 uppercase tracking-widest"
+                    className="absolute top-1.5 right-1.5 w-5 h-5 bg-rose-600 hover:bg-rose-700 text-white rounded-full flex items-center justify-center cursor-pointer text-[10px] font-black z-20 transition border border-black shadow-[1.5px_1.5px_0px_#000]"
+                    title="Remove image"
                   >
-                    Remove
+                    ✕
                   </button>
                 </div>
               ))}
